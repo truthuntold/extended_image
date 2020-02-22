@@ -2,18 +2,19 @@ import 'dart:io' show File;
 import 'dart:typed_data';
 
 import 'package:extended_image/src/extended_image_border_painter.dart';
-import 'package:extended_image/src/gesture/extended_image_gesture.dart';
 import 'package:extended_image/src/extended_image_typedef.dart';
 import 'package:extended_image/src/extended_image_utils.dart';
+import 'package:extended_image/src/gesture/extended_image_gesture.dart';
 import 'package:extended_image/src/image/extended_raw_image.dart';
 import 'package:extended_image_library/extended_image_library.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter/semantics.dart';
 import 'package:http_client_helper/http_client_helper.dart';
+
 import 'editor/extended_image_editor.dart';
 import 'gesture/extended_image_slide_page.dart';
 import 'gesture/extended_image_slide_page_handler.dart';
@@ -353,10 +354,8 @@ class ExtendedImage extends StatefulWidget {
     this.heroBuilderForSlidingPage,
     this.clearMemoryCacheWhenDispose: false,
   })  : image = scale != null
-            ? ExtendedExactAssetImageProvider(name,
-                bundle: bundle, scale: scale, package: package)
-            : ExtendedAssetImageProvider(name,
-                bundle: bundle, package: package),
+            ? ExtendedExactAssetImageProvider(name, bundle: bundle, scale: scale, package: package)
+            : ExtendedAssetImageProvider(name, bundle: bundle, package: package),
         assert(alignment != null),
         assert(repeat != null),
         assert(matchTextDirection != null),
@@ -643,8 +642,7 @@ class ExtendedImage extends StatefulWidget {
   _ExtendedImageState createState() => _ExtendedImageState();
 }
 
-class _ExtendedImageState extends State<ExtendedImage>
-    with ExtendedImageState, WidgetsBindingObserver {
+class _ExtendedImageState extends State<ExtendedImage> with ExtendedImageState, WidgetsBindingObserver {
   LoadState _loadState;
   ImageStream _imageStream;
   ImageInfo _imageInfo;
@@ -667,8 +665,7 @@ class _ExtendedImageState extends State<ExtendedImage>
 
     _slidePageState = null;
     if (widget.enableSlideOutPage) {
-      _slidePageState =
-          context.findAncestorStateOfType<ExtendedImageSlidePageState>();
+      _slidePageState = context.findAncestorStateOfType<ExtendedImageSlidePageState>();
     }
 
     if (TickerMode.of(context))
@@ -689,8 +686,7 @@ class _ExtendedImageState extends State<ExtendedImage>
     if (widget.enableSlideOutPage != oldWidget.enableSlideOutPage) {
       _slidePageState = null;
       if (widget.enableSlideOutPage) {
-        _slidePageState =
-            context.findAncestorStateOfType<ExtendedImageSlidePageState>();
+        _slidePageState = context.findAncestorStateOfType<ExtendedImageSlidePageState>();
       }
     }
   }
@@ -719,11 +715,8 @@ class _ExtendedImageState extends State<ExtendedImage>
       widget.image.evict();
     }
 
-    final ImageStream newStream = widget.image.resolve(
-        createLocalImageConfiguration(context,
-            size: widget.width != null && widget.height != null
-                ? Size(widget.width, widget.height)
-                : null));
+    final ImageStream newStream = widget.image.resolve(createLocalImageConfiguration(context,
+        size: widget.width != null && widget.height != null ? Size(widget.width, widget.height) : null));
     assert(newStream != null);
 
     if (_imageInfo != null && !rebuild && _imageStream?.key == newStream?.key) {
@@ -779,8 +772,7 @@ class _ExtendedImageState extends State<ExtendedImage>
     if (_imageStream?.key == newStream?.key) return;
     //print("_updateSourceStream");
     if (_isListeningToStream)
-      _imageStream.removeListener(
-          ImageStreamListener(_handleImageChanged, onError: _loadFailed));
+      _imageStream.removeListener(ImageStreamListener(_handleImageChanged, onError: _loadFailed));
 
     if (!widget.gaplessPlayback || rebuild) {
       setState(() {
@@ -790,22 +782,18 @@ class _ExtendedImageState extends State<ExtendedImage>
     }
 
     _imageStream = newStream;
-    if (_isListeningToStream)
-      _imageStream.addListener(
-          ImageStreamListener(_handleImageChanged, onError: _loadFailed));
+    if (_isListeningToStream) _imageStream.addListener(ImageStreamListener(_handleImageChanged, onError: _loadFailed));
   }
 
   void _listenToStream() {
     if (_isListeningToStream) return;
-    _imageStream.addListener(
-        ImageStreamListener(_handleImageChanged, onError: _loadFailed));
+    _imageStream.addListener(ImageStreamListener(_handleImageChanged, onError: _loadFailed));
     _isListeningToStream = true;
   }
 
   void _stopListeningToStream() {
     if (!_isListeningToStream) return;
-    _imageStream.removeListener(
-        ImageStreamListener(_handleImageChanged, onError: _loadFailed));
+    _imageStream.removeListener(ImageStreamListener(_handleImageChanged, onError: _loadFailed));
     _isListeningToStream = false;
   }
 
@@ -849,7 +837,7 @@ class _ExtendedImageState extends State<ExtendedImage>
             );
             break;
           case LoadState.completed:
-            current = _getCompletedWidget();
+            current = getCompletedWidget();
             break;
           case LoadState.failed:
             current = Container(
@@ -865,7 +853,7 @@ class _ExtendedImageState extends State<ExtendedImage>
         }
       } else {
         if (_loadState == LoadState.completed) {
-          current = _getCompletedWidget();
+          current = getCompletedWidget();
         } else {
           current = _buildExtendedRawImage();
         }
@@ -893,10 +881,8 @@ class _ExtendedImageState extends State<ExtendedImage>
 
     if (widget.border != null) {
       current = CustomPaint(
-        foregroundPainter: ExtendedImageBorderPainter(
-            borderRadius: widget.borderRadius,
-            border: widget.border,
-            shape: widget.shape),
+        foregroundPainter:
+            ExtendedImageBorderPainter(borderRadius: widget.borderRadius, border: widget.border, shape: widget.shape),
         child: current,
         size: Size(widget.width, widget.height),
       );
@@ -907,9 +893,7 @@ class _ExtendedImageState extends State<ExtendedImage>
     }
 
     ///add for loading/falied/ unGesture image
-    if (_slidePageState != null &&
-        !(_loadState == LoadState.completed &&
-            widget.mode == ExtendedImageMode.gesture)) {
+    if (_slidePageState != null && !(_loadState == LoadState.completed && widget.mode == ExtendedImageMode.gesture)) {
       current = ExtendedImageSlidePageHandler(current, _slidePageState);
     }
 
@@ -922,7 +906,7 @@ class _ExtendedImageState extends State<ExtendedImage>
     );
   }
 
-  Widget _getCompletedWidget() {
+  Widget getCompletedWidget() {
     Widget current;
     if (widget.mode == ExtendedImageMode.gesture) {
       current = ExtendedImageGesture(this, _slidePageState);
@@ -1001,5 +985,5 @@ class _ExtendedImageState extends State<ExtendedImage>
   ExtendedImage get imageWidget => this.widget;
 
   @override
-  Widget get completedWidget => _getCompletedWidget();
+  Widget get completedWidget => getCompletedWidget();
 }
