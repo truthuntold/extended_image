@@ -1,8 +1,9 @@
 import 'dart:math';
 import 'dart:ui' as ui show Image;
+
 import 'package:extended_image/src/editor/extended_image_editor_utils.dart';
-import 'package:extended_image/src/gesture/extended_image_gesture_utils.dart';
 import 'package:extended_image/src/extended_image_typedef.dart';
+import 'package:extended_image/src/gesture/extended_image_gesture_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:meta/meta.dart';
@@ -121,8 +122,7 @@ class ExtendedRenderImage extends RenderBox {
       return;
     }
     _resolvedAlignment = alignment.resolve(textDirection);
-    _flipHorizontally =
-        matchTextDirection && textDirection == TextDirection.rtl;
+    _flipHorizontally = matchTextDirection && textDirection == TextDirection.rtl;
   }
 
   void _markNeedResolution() {
@@ -193,8 +193,7 @@ class ExtendedRenderImage extends RenderBox {
     if (_color == null) {
       _colorFilter = null;
     } else {
-      _colorFilter =
-          ColorFilter.mode(_color, _colorBlendMode ?? BlendMode.srcIn);
+      _colorFilter = ColorFilter.mode(_color, _colorBlendMode ?? BlendMode.srcIn);
     }
   }
 
@@ -367,15 +366,14 @@ class ExtendedRenderImage extends RenderBox {
   Size _sizeForConstraints(BoxConstraints constraints) {
     // Folds the given |width| and |height| into |constraints| so they can all
     // be treated uniformly.
-    constraints = BoxConstraints.tightFor(width: _width, height: _height)
-        .enforce(constraints);
+    constraints = BoxConstraints.tightFor(width: _width, height: _height).enforce(constraints);
 
     if (_image == null) {
       return constraints.smallest;
     }
 
-    return constraints.constrainSizeAndAttemptToPreserveAspectRatio(Size(
-        _image.width.toDouble() / _scale, _image.height.toDouble() / _scale));
+    return constraints.constrainSizeAndAttemptToPreserveAspectRatio(
+        Size(_image.width.toDouble() / _scale, _image.height.toDouble() / _scale));
   }
 
   @override
@@ -384,15 +382,13 @@ class ExtendedRenderImage extends RenderBox {
     if (_width == null && _height == null) {
       return 0.0;
     }
-    return _sizeForConstraints(BoxConstraints.tightForFinite(height: height))
-        .width;
+    return _sizeForConstraints(BoxConstraints.tightForFinite(height: height)).width;
   }
 
   @override
   double computeMaxIntrinsicWidth(double height) {
     assert(height >= 0.0);
-    return _sizeForConstraints(BoxConstraints.tightForFinite(height: height))
-        .width;
+    return _sizeForConstraints(BoxConstraints.tightForFinite(height: height)).width;
   }
 
   @override
@@ -401,15 +397,13 @@ class ExtendedRenderImage extends RenderBox {
     if (_width == null && _height == null) {
       return 0.0;
     }
-    return _sizeForConstraints(BoxConstraints.tightForFinite(width: width))
-        .height;
+    return _sizeForConstraints(BoxConstraints.tightForFinite(width: width)).height;
   }
 
   @override
   double computeMaxIntrinsicHeight(double width) {
     assert(width >= 0.0);
-    return _sizeForConstraints(BoxConstraints.tightForFinite(width: width))
-        .height;
+    return _sizeForConstraints(BoxConstraints.tightForFinite(width: width)).height;
   }
 
   @override
@@ -459,22 +453,14 @@ class ExtendedRenderImage extends RenderBox {
     properties.add(DoubleProperty('width', width, defaultValue: null));
     properties.add(DoubleProperty('height', height, defaultValue: null));
     properties.add(DoubleProperty('scale', scale, defaultValue: 1.0));
-    properties
-        .add(DiagnosticsProperty<Color>('color', color, defaultValue: null));
-    properties.add(EnumProperty<BlendMode>('colorBlendMode', colorBlendMode,
-        defaultValue: null));
+    properties.add(DiagnosticsProperty<Color>('color', color, defaultValue: null));
+    properties.add(EnumProperty<BlendMode>('colorBlendMode', colorBlendMode, defaultValue: null));
     properties.add(EnumProperty<BoxFit>('fit', fit, defaultValue: null));
-    properties.add(DiagnosticsProperty<AlignmentGeometry>(
-        'alignment', alignment,
-        defaultValue: null));
-    properties.add(EnumProperty<ImageRepeat>('repeat', repeat,
-        defaultValue: ImageRepeat.noRepeat));
-    properties.add(DiagnosticsProperty<Rect>('centerSlice', centerSlice,
-        defaultValue: null));
-    properties.add(FlagProperty('matchTextDirection',
-        value: matchTextDirection, ifTrue: 'match text direction'));
-    properties.add(EnumProperty<TextDirection>('textDirection', textDirection,
-        defaultValue: null));
+    properties.add(DiagnosticsProperty<AlignmentGeometry>('alignment', alignment, defaultValue: null));
+    properties.add(EnumProperty<ImageRepeat>('repeat', repeat, defaultValue: ImageRepeat.noRepeat));
+    properties.add(DiagnosticsProperty<Rect>('centerSlice', centerSlice, defaultValue: null));
+    properties.add(FlagProperty('matchTextDirection', value: matchTextDirection, ifTrue: 'match text direction'));
+    properties.add(EnumProperty<TextDirection>('textDirection', textDirection, defaultValue: null));
     properties.add(DiagnosticsProperty<bool>('invertColors', invertColors));
     properties.add(EnumProperty<FilterQuality>('filterQuality', filterQuality));
   }
@@ -532,8 +518,7 @@ void paintExtendedImage({
   }
   fit ??= centerSlice == null ? BoxFit.scaleDown : BoxFit.fill;
   assert(centerSlice == null || (fit != BoxFit.none && fit != BoxFit.cover));
-  final FittedSizes fittedSizes =
-      applyBoxFit(fit, inputSize / scale, outputSize);
+  final FittedSizes fittedSizes = applyBoxFit(fit, inputSize / scale, outputSize);
   final Size sourceSize = fittedSizes.source * scale;
   Size destinationSize = fittedSizes.destination;
   if (centerSlice != null) {
@@ -557,12 +542,9 @@ void paintExtendedImage({
     paint.filterQuality = filterQuality;
   }
   paint.invertColors = invertColors;
-  final double halfWidthDelta =
-      (outputSize.width - destinationSize.width) / 2.0;
-  final double halfHeightDelta =
-      (outputSize.height - destinationSize.height) / 2.0;
-  final double dx = halfWidthDelta +
-      (flipHorizontally ? -alignment.x : alignment.x) * halfWidthDelta;
+  final double halfWidthDelta = (outputSize.width - destinationSize.width) / 2.0;
+  final double halfHeightDelta = (outputSize.height - destinationSize.height) / 2.0;
+  final double dx = halfWidthDelta + (flipHorizontally ? -alignment.x : alignment.x) * halfWidthDelta;
   final double dy = halfHeightDelta + alignment.y * halfHeightDelta;
   final Offset destinationPosition = topLeft.translate(dx, dy);
   Rect destinationRect = destinationPosition & destinationSize;
@@ -570,8 +552,7 @@ void paintExtendedImage({
   bool needClip = false;
 
   if (gestureDetails != null) {
-    destinationRect =
-        gestureDetails.calculateFinalDestinationRect(rect, destinationRect);
+    destinationRect = gestureDetails.calculateFinalDestinationRect(rect, destinationRect);
 
     ///outside and need clip
     needClip = outRect(rect, destinationRect);
@@ -616,8 +597,7 @@ void paintExtendedImage({
     }
 
     if (hasEditAction) {
-      final Offset origin =
-          editActionDetails.screenCropRect?.center ?? destinationRect.center;
+      final Offset origin = editActionDetails.screenCropRect?.center ?? destinationRect.center;
 
       final Matrix4 result = Matrix4.identity();
 
@@ -668,15 +648,12 @@ void paintExtendedImage({
   }
 
   if (centerSlice == null) {
-    final Rect sourceRect = customSourceRect ??
-        alignment.inscribe(sourceSize, Offset.zero & inputSize);
-    for (final Rect tileRect
-        in _generateImageTileRects(rect, destinationRect, repeat)) {
+    final Rect sourceRect = customSourceRect ?? alignment.inscribe(sourceSize, Offset.zero & inputSize);
+    for (final Rect tileRect in _generateImageTileRects(rect, destinationRect, repeat)) {
       canvas.drawImageRect(image, sourceRect, tileRect, paint);
     }
   } else {
-    for (final Rect tileRect
-        in _generateImageTileRects(rect, destinationRect, repeat)) {
+    for (final Rect tileRect in _generateImageTileRects(rect, destinationRect, repeat)) {
       canvas.drawImageNine(image, centerSlice, tileRect, paint);
     }
   }
@@ -690,12 +667,11 @@ void paintExtendedImage({
   }
 
   if (afterPaintImage != null) {
-    afterPaintImage(canvas, destinationRect, image, paint);
+    afterPaintImage(canvas, destinationRect, image, paint, gestureDetails);
   }
 }
 
-Iterable<Rect> _generateImageTileRects(
-    Rect outputRect, Rect fundamentalRect, ImageRepeat repeat) sync* {
+Iterable<Rect> _generateImageTileRects(Rect outputRect, Rect fundamentalRect, ImageRepeat repeat) sync* {
   if (repeat == ImageRepeat.noRepeat) {
     yield fundamentalRect;
     return;
