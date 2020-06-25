@@ -17,8 +17,7 @@ typedef LoadStateChanged = Widget Function(ExtendedImageState state);
 
 ///[rect] is render size
 ///if return true, it will not paint original image,
-typedef BeforePaintImage = bool Function(
-    Canvas canvas, Rect rect, ui.Image image, Paint paint, GestureDetails gestureDetails);
+typedef BeforePaintImage = bool Function(Canvas canvas, Rect rect, ui.Image image, Paint paint);
 
 typedef AfterPaintImage = void Function(
     Canvas canvas, Rect rect, ui.Image image, Paint paint, GestureDetails gestureDetails);
