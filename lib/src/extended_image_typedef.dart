@@ -1,8 +1,8 @@
 import 'dart:ui' as ui show Image;
+
 import 'package:extended_image/src/extended_image_utils.dart';
 import 'package:extended_image/src/gesture/extended_image_gesture_utils.dart';
 import 'package:flutter/material.dart';
-
 
 import 'editor/extended_image_editor_utils.dart';
 import 'gesture/extended_image_gesture.dart';
@@ -18,10 +18,10 @@ typedef LoadStateChanged = Widget Function(ExtendedImageState state);
 ///[rect] is render size
 ///if return true, it will not paint original image,
 typedef BeforePaintImage = bool Function(
-    Canvas canvas, Rect rect, ui.Image image, Paint paint);
+    Canvas canvas, Rect rect, ui.Image image, Paint paint, GestureDetails gestureDetails);
 
 typedef AfterPaintImage = void Function(
-    Canvas canvas, Rect rect, ui.Image image, Paint paint);
+    Canvas canvas, Rect rect, ui.Image image, Paint paint, GestureDetails gestureDetails);
 
 /// animation call back for inertia drag
 typedef GestureOffsetAnimationCallBack = void Function(Offset offset);
@@ -33,8 +33,7 @@ typedef GestureScaleAnimationCallBack = void Function(double scale);
 typedef DoubleTap = void Function(ExtendedImageGestureState state);
 
 /// build page background when slide page
-typedef SlidePageBackgroundHandler = Color Function(
-    Offset offset, Size pageSize);
+typedef SlidePageBackgroundHandler = Color Function(Offset offset, Size pageSize);
 
 /// customize offset of page when slide page
 typedef SlideOffsetHandler = Offset Function(
@@ -57,8 +56,7 @@ typedef SlideScaleHandler = double Function(
 });
 
 ///init GestureConfig when image is ready.
-typedef InitGestureConfigHandler = GestureConfig Function(
-    ExtendedImageState state);
+typedef InitGestureConfigHandler = GestureConfig Function(ExtendedImageState state);
 
 ///on sliding page
 typedef OnSlidingPage = void Function(ExtendedImageSlidePageState state);
@@ -79,18 +77,15 @@ typedef MergeEditRect = Rect Function(Rect editRect);
 typedef BuildGestureImage = Widget Function(GestureDetails gestureDetails);
 
 ///init GestureConfig when image is ready.
-typedef InitEditorConfigHandler = EditorConfig Function(
-    ExtendedImageState state);
+typedef InitEditorConfigHandler = EditorConfig Function(ExtendedImageState state);
 
 ///get editor mask color base on pointerDown
-typedef EditorMaskColorHandler = Color Function(
-    BuildContext context, bool pointerDown);
+typedef EditorMaskColorHandler = Color Function(BuildContext context, bool pointerDown);
 
 ///build Hero only for sliding page
 ///the transform of sliding page must be working on Hero
 ///so that Hero animation wouldn't be strange when pop page
 typedef HeroBuilderForSlidingPage = Widget Function(Widget widget);
-
 
 ///build image for gesture, we can handle custom Widget about gesture
 typedef ImageBuilderForGesture = Widget Function(Widget image);

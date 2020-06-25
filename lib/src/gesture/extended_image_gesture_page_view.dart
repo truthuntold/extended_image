@@ -40,9 +40,7 @@ class ExtendedImageGesturePageView extends StatefulWidget {
     CanScrollPage canScrollPage,
   })  : controller = controller ?? _defaultPageController,
         childrenDelegate = SliverChildListDelegate(children),
-        physics = physics != null
-            ? _defaultScrollPhysics.applyTo(physics)
-            : _defaultScrollPhysics,
+        physics = physics != null ? _defaultScrollPhysics.applyTo(physics) : _defaultScrollPhysics,
         canMovePage = canMovePage ?? _defaultCanMovePage,
         canScrollPage = canScrollPage ?? _defaultCanScrollPage,
         super(key: key);
@@ -72,11 +70,8 @@ class ExtendedImageGesturePageView extends StatefulWidget {
     CanMovePage canMovePage,
     CanScrollPage canScrollPage,
   })  : controller = controller ?? _defaultPageController,
-        childrenDelegate =
-            SliverChildBuilderDelegate(itemBuilder, childCount: itemCount),
-        physics = physics != null
-            ? _defaultScrollPhysics.applyTo(physics)
-            : _defaultScrollPhysics,
+        childrenDelegate = SliverChildBuilderDelegate(itemBuilder, childCount: itemCount),
+        physics = physics != null ? _defaultScrollPhysics.applyTo(physics) : _defaultScrollPhysics,
         canMovePage = canMovePage ?? _defaultCanMovePage,
         canScrollPage = canScrollPage ?? _defaultCanScrollPage,
         super(key: key);
@@ -156,16 +151,13 @@ class ExtendedImageGesturePageView extends StatefulWidget {
   final SliverChildDelegate childrenDelegate;
 
   @override
-  ExtendedImageGesturePageViewState createState() =>
-      ExtendedImageGesturePageViewState();
+  ExtendedImageGesturePageViewState createState() => ExtendedImageGesturePageViewState();
 }
 
-class ExtendedImageGesturePageViewState
-    extends State<ExtendedImageGesturePageView>
+class ExtendedImageGesturePageViewState extends State<ExtendedImageGesturePageView>
     with SingleTickerProviderStateMixin {
-  Map<Type, GestureRecognizerFactory> _gestureRecognizers =
-      const <Type, GestureRecognizerFactory>{};
-  GestureAnimation _gestureAnimation;
+  Map<Type, GestureRecognizerFactory> _gestureRecognizers = const <Type, GestureRecognizerFactory>{};
+  GestureAnimation gestureAnimation;
   ScrollPosition get position => pageController.position;
   PageController get pageController => widget.controller;
 
@@ -173,14 +165,11 @@ class ExtendedImageGesturePageViewState
   @override
   void initState() {
     super.initState();
-    _gestureAnimation = GestureAnimation(this, offsetCallBack: (Offset value) {
-      final GestureDetails gestureDetails =
-          extendedImageGestureState?.gestureDetails;
+    gestureAnimation = GestureAnimation(this, offsetCallBack: (Offset value) {
+      final GestureDetails gestureDetails = extendedImageGestureState?.gestureDetails;
       if (gestureDetails != null) {
-        extendedImageGestureState?.gestureDetails = GestureDetails(
-            offset: value,
-            totalScale: gestureDetails.totalScale,
-            gestureDetails: gestureDetails);
+        extendedImageGestureState?.gestureDetails =
+            GestureDetails(offset: value, totalScale: gestureDetails.totalScale, gestureDetails: gestureDetails);
       }
     });
     _initGestureRecognizers();
@@ -194,16 +183,13 @@ class ExtendedImageGesturePageViewState
 
       ///user's physics
       if (widget.physics.parent != null) {
-        canMove =
-            widget.physics.parent.shouldAcceptUserOffset(_testPageMetrics);
+        canMove = widget.physics.parent.shouldAcceptUserOffset(_testPageMetrics);
       }
       if (canMove) {
         switch (widget.scrollDirection) {
           case Axis.vertical:
             _gestureRecognizers = <Type, GestureRecognizerFactory>{
-              VerticalDragGestureRecognizer:
-                  GestureRecognizerFactoryWithHandlers<
-                      VerticalDragGestureRecognizer>(
+              VerticalDragGestureRecognizer: GestureRecognizerFactoryWithHandlers<VerticalDragGestureRecognizer>(
                 () => VerticalDragGestureRecognizer(),
                 (VerticalDragGestureRecognizer instance) {
                   instance
@@ -221,9 +207,7 @@ class ExtendedImageGesturePageViewState
             break;
           case Axis.horizontal:
             _gestureRecognizers = <Type, GestureRecognizerFactory>{
-              HorizontalDragGestureRecognizer:
-                  GestureRecognizerFactoryWithHandlers<
-                      HorizontalDragGestureRecognizer>(
+              HorizontalDragGestureRecognizer: GestureRecognizerFactoryWithHandlers<HorizontalDragGestureRecognizer>(
                 () => HorizontalDragGestureRecognizer(),
                 (HorizontalDragGestureRecognizer instance) {
                   instance
@@ -252,7 +236,7 @@ class ExtendedImageGesturePageViewState
 
   @override
   void dispose() {
-    _gestureAnimation.dispose();
+    gestureAnimation.dispose();
     super.dispose();
   }
 
@@ -274,8 +258,7 @@ class ExtendedImageGesturePageViewState
       key: widget.key,
     );
 
-    if (widget.physics.parent == null ||
-        widget.physics.parent.shouldAcceptUserOffset(_testPageMetrics)) {
+    if (widget.physics.parent == null || widget.physics.parent.shouldAcceptUserOffset(_testPageMetrics)) {
       result = RawGestureDetector(
         gestures: _gestureRecognizers,
         behavior: HitTestBehavior.opaque,
@@ -290,7 +273,7 @@ class ExtendedImageGesturePageViewState
 
   void _handleDragDown(DragDownDetails details) {
     //print(details);
-    _gestureAnimation.stop();
+    gestureAnimation.stop();
     assert(_drag == null);
     assert(_hold == null);
     _hold = position.hold(_disposeHold);
@@ -315,8 +298,7 @@ class ExtendedImageGesturePageViewState
     }
 
     if (extendedImageGestureState != null) {
-      final GestureDetails gestureDetails =
-          extendedImageGestureState.gestureDetails;
+      final GestureDetails gestureDetails = extendedImageGestureState.gestureDetails;
       if (gestureDetails != null) {
         final int currentPage = pageController.page.round();
 //        bool pageChanging = false;
@@ -339,15 +321,13 @@ class ExtendedImageGesturePageViewState
 //          }
 //        }
 
-        if ((gestureDetails.movePage(delta) ||
-                (currentPage != pageController.page)) &&
+        if ((gestureDetails.movePage(delta) || (currentPage != pageController.page)) &&
             widget.canMovePage(gestureDetails)) {
           _drag?.update(details);
         } else {
           if (currentPage == pageController.page) {
             extendedImageGestureState.gestureDetails = GestureDetails(
-                offset: gestureDetails.offset +
-                    delta * extendedImageGestureState.imageGestureConfig.speed,
+                offset: gestureDetails.offset + delta * extendedImageGestureState.imageGestureConfig.speed,
                 totalScale: gestureDetails.totalScale,
                 gestureDetails: gestureDetails);
           }
@@ -369,8 +349,7 @@ class ExtendedImageGesturePageViewState
     }
     DragEndDetails temp = details;
     if (extendedImageGestureState != null) {
-      final GestureDetails gestureDetails =
-          extendedImageGestureState.gestureDetails;
+      final GestureDetails gestureDetails = extendedImageGestureState.gestureDetails;
       final int currentPage = pageController.page.round();
       final bool movePage = pageController.page != currentPage;
 
@@ -383,8 +362,7 @@ class ExtendedImageGesturePageViewState
       if (!movePage &&
           gestureDetails != null &&
           gestureDetails.totalScale > 1.0 &&
-          (gestureDetails.computeHorizontalBoundary ||
-              gestureDetails.computeVerticalBoundary)) {
+          (gestureDetails.computeHorizontalBoundary || gestureDetails.computeVerticalBoundary)) {
         //stop
         temp = DragEndDetails(primaryVelocity: 0.0);
 
@@ -403,8 +381,7 @@ class ExtendedImageGesturePageViewState
             direction = Offset(0.0, direction.dy);
           }
 
-          _gestureAnimation.animationOffset(
-              gestureDetails.offset, gestureDetails.offset + direction);
+          gestureAnimation.animationOffset(gestureDetails.offset, gestureDetails.offset + direction);
         }
       }
     }
